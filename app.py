@@ -3,7 +3,7 @@ import joblib
 
 app = Flask(__name__)
 
-model = joblib.load(r"/workspaces/api-thing/Baisc_air_pollution_model.pkl")
+model = joblib.load(r"Baisc_air_pollution_model.pkl")
 
 traffic_map = {"Low": 0, "Medium": 1, "High": 2}
 indus_map = {"None": 0, "Low": 1, "Medium": 2, "High": 3}
