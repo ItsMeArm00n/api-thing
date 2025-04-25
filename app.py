@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
 import joblib
+from flask_cors import CORS  # Add this at the top
 
 app = Flask(__name__)
+CORS(app)  # Add this line right after creating your Flask app
 
 model = joblib.load(r"Baisc_air_pollution_model.pkl")
 
