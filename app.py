@@ -32,13 +32,17 @@ def modelResponse(user_input):
 def predict():
     try:
         data = request.get_json()
-        pollution_level, aqi_range = modelResponse(data)
+        # Change "data" to "inputs" to match Framer code
+        pollution_level, aqi_range = modelResponse({"data": [
+            data["input1"],  # Traffic level
+            data["input2"],  # Industrial activity
+            data["input3"],  # Temperature
+            data["input4"],  # Humidity
+            data["input5"]   # Tree Density
+        ]})
         return jsonify({
-            "prediction": pollution_level,
-            "AQI-Range": aqi_range
+            "prediction": pollution_level.lower(),  # Ensure lowercase to match your Framer code
+            "aqi": aqi_range.split("-")[0]  # Returns first number of range (e.g., "51" from "51-150")
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
