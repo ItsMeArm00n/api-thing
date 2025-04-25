@@ -7,7 +7,12 @@ model = joblib.load(r"Baisc_air_pollution_model.pkl")
 
 traffic_map = {"Low": 0, "Medium": 1, "High": 2}
 indus_map = {"None": 0, "Low": 1, "Medium": 2, "High": 3}
-pollution_map = {0: "Low", 1: "Moderate", 2: "High"}
+# Now, mapping to both pollution level and AQI range
+pollution_map = {
+    0: ("Low", "0-50"),
+    1: ("Moderate", "51-150"),
+    2: ("High", "151+")
+}
 
 def modelResponse(user_input):
     raw = user_input["data"]
@@ -18,14 +23,18 @@ def modelResponse(user_input):
     tree = float(raw[4])
     input_data = [[traffic, indus, temp, humidity, tree]]
     prediction = model.predict(input_data)[0]
-    return pollution_map.get(prediction, "Unknown")
+    pollution_level, aqi_range = pollution_map.get(prediction, ("Unknown", "N/A"))
+    return pollution_level, aqi_range
 
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
         data = request.get_json()
-        result = modelResponse(data)
-        return jsonify({"Pollution_Level": result})
+        pollution_level, aqi_range = modelResponse(data)
+        return jsonify({
+            "prediction": pollution_level,
+            "AQI-Range": aqi_range
+        })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
