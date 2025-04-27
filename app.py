@@ -24,23 +24,23 @@ def modelResponse(user_input):
     tree = float(raw[4])
     input_data = [[traffic, indus, temp, humidity, tree]]
     prediction = model.predict(input_data)[0]
-    pollution_level, aqi_range = pollution_map.get(prediction, ("Unknown", "N/A"))
-    return pollution_level, aqi_range  # ✅ Return both pollution_level and aqi_range
+    pollution_level, _ = pollution_map.get(prediction, ("Unknown", "N/A"))
+    return pollution_level
 
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
         data = request.get_json()
-        pollution_level, aqi_range = modelResponse({"data": [
-            data["input1"],  # Traffic level
-            data["input2"],  # Industrial activity
-            data["input3"],  # Temperature
-            data["input4"],  # Humidity
-            data["input5"]   # Tree Density
+        # Now correctly checking inputs
+        pollution_level = modelResponse({"data": [
+            data.get("input1"),
+            data.get("input2"),
+            data.get("input3"),
+            data.get("input4"),
+            data.get("input5")
         ]})
         return jsonify({
-            "prediction": pollution_level.lower(),
-            #"aqi": aqi_range.split("-")[0]
+            "prediction": pollution_level.lower()
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
