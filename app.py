@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import joblib
 from flask_cors import CORS
 
-app = Flask(_name_)
+app = Flask(__name__)
 CORS(app)
 
 model = joblib.load(r"Baisc_air_pollution_model.pkl")
