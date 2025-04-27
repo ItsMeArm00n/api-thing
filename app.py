@@ -8,7 +8,7 @@ CORS(app)  # Add this line right after creating your Flask app
 model = joblib.load(r"Baisc_air_pollution_model.pkl")
 
 traffic_map = {"Low": 0, "Medium": 1, "High": 2}
-indus_map = {"None": 0, "Low": 1, "Medium": 2, "High": 3}
+indus_map = {"Low": 1, "Medium": 2, "High": 3}
 # Now, mapping to both pollution level and AQI range
 pollution_map = {
     0: ("Low", "0-50"),
