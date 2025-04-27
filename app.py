@@ -1,15 +1,14 @@
 from flask import Flask, request, jsonify
 import joblib
-from flask_cors import CORS  # Add this at the top
+from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app)  # Add this line right after creating your Flask app
+app = Flask(_name_)
+CORS(app)
 
 model = joblib.load(r"Baisc_air_pollution_model.pkl")
 
 traffic_map = {"Low": 0, "Medium": 1, "High": 2}
 indus_map = {"Low": 1, "Medium": 2, "High": 3}
-# Now, mapping to both pollution level and AQI range
 pollution_map = {
     0: ("Low", "0-50"),
     1: ("Moderate", "51-150"),
@@ -26,13 +25,12 @@ def modelResponse(user_input):
     input_data = [[traffic, indus, temp, humidity, tree]]
     prediction = model.predict(input_data)[0]
     pollution_level, aqi_range = pollution_map.get(prediction, ("Unknown", "N/A"))
-    return pollution_level
+    return pollution_level, aqi_range  # ✅ Return both pollution_level and aqi_range
 
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
         data = request.get_json()
-        # Change "data" to "inputs" to match Framer code
         pollution_level, aqi_range = modelResponse({"data": [
             data["input1"],  # Traffic level
             data["input2"],  # Industrial activity
@@ -41,10 +39,11 @@ def predict():
             data["input5"]   # Tree Density
         ]})
         return jsonify({
-            "prediction": pollution_level.lower(),  # Ensure lowercase to match your Framer code
-            "aqi": aqi_range.split("-")[0]  # Returns first number of range (e.g., "51" from "51-150")
+            "prediction": pollution_level.lower(),
+            #"aqi": aqi_range.split("-")[0]
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-if __name__ == '__main__':
+
+if _name_ == '_main_':
     app.run(host='0.0.0.0', port=10000)
