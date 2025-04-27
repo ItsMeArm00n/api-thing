@@ -26,7 +26,7 @@ def modelResponse(user_input):
     input_data = [[traffic, indus, temp, humidity, tree]]
     prediction = model.predict(input_data)[0]
     pollution_level, aqi_range = pollution_map.get(prediction, ("Unknown", "N/A"))
-    return pollution_level, aqi_range
+    return pollution_level
 
 @app.route('/predict', methods=['POST'])
 def predict():
